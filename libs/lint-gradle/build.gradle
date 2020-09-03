@@ -1,0 +1,59 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:6.1.1'
+    }
+}
+apply plugin: 'com.android.tools.java-library'
+apply plugin: 'com.android.tools.kotlin'
+apply plugin: 'com.android.tools.publish'
+apply plugin: 'jacoco-tools-base'
+apply plugin: 'sdk-java-lib'
+
+group = 'com.android.tools.lint'
+archivesBaseName = 'lint-gradle'
+version = rootProject.ext.baseVersion
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+    // NOTE NOTE NOTE - before changing this, note that lint dependencies
+    // must also be reflected in [LintClassLoaderProvider#computeUrls] as well
+    // so update both in sync
+    compile project(':base:sdk-common')
+    compile project(':base:builder')
+    compile project(':base:builder-model')
+    compile project(':base:intellij-core')
+    compile project(':base:kotlin-compiler')
+    compile project(':base:uast')
+    compile project(':base:manifest-merger')
+    compile project(':base:lint')
+    compile project(':base:lint-gradle-api')
+    compile project(':base:zipflinger')
+    compileOnly gradleApi()
+
+    compile libs.groovy
+    compile libs.kotlin_reflect
+    compile libs.kotlin_stdlib
+
+    testCompile gradleApi()
+    testCompile libs.junit
+    testCompile libs.truth
+    testCompile libs.mockito_core
+    testCompile project(':base:testutils')
+    testCompile project(':base:lint-tests')
+}
+
+sourceSets {
+    main.resources.srcDir 'src/main/java'
+    test.resources.srcDir 'src/test/java'
+}
+
+project.ext.pomName = 'Android Tools Lint Gradle Integration'
+project.ext.pomDesc = 'Gradle integration for Android Lint'
