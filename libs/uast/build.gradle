@@ -1,0 +1,34 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:6.1.1'
+    }
+}
+apply plugin: 'com.android.tools.java'
+apply plugin: 'com.android.tools.publish'
+
+group = 'com.android.tools.external.org-jetbrains'
+archivesBaseName = 'uast'
+version = rootProject.ext.baseVersion
+
+def prebuiltJars = [
+    "../../../../../prebuilts/tools/common/lint-psi/uast/uast-common.jar",
+    "../../../../../prebuilts/tools/common/lint-psi/uast/uast-java.jar",
+    "../../../../../prebuilts/tools/common/lint-psi/uast/uast-kotlin.jar",
+]
+
+prebuiltJars.forEach {
+    jar.from(zipTree(it))
+    dependencies.compile(files(it)) // For Symbol resolution in Intellij IDEA
+}
+
+project.ext.pomName = 'Unified AST'
+project.ext.pomDesc = 'Unified AST'
+
+tasks.getByName("sourcesJar") {
+    from zipTree("../../../../../prebuilts/tools/common/lint-psi/uast/uast-common-sources.jar")
+    from zipTree("../../../../../prebuilts/tools/common/lint-psi/uast/uast-java-sources.jar")
+    from zipTree("../../../../../prebuilts/tools/common/lint-psi/uast/uast-kotlin-sources.jar")
+}
