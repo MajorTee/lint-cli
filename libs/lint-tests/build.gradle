@@ -1,0 +1,54 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:6.1.1'
+    }
+}
+apply plugin: 'com.android.tools.java-library'
+apply plugin: 'com.android.tools.kotlin'
+apply plugin: 'com.android.tools.publish'
+apply plugin: 'jacoco-tools-base'
+
+import org.gradle.internal.jvm.Jvm
+
+group = 'com.android.tools.lint'
+archivesBaseName = 'lint-tests'
+version = rootProject.ext.baseVersion
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+    compile project(':base:lint')
+    compile project(':base:intellij-core')
+    compile project(':base:kotlin-compiler')
+    compile project(':base:uast')
+    compile project(':base:layoutlib-api')
+    compile project(':base:testutils')
+    compile libs.junit
+    compile libs.groovy
+    compile libs.mockito_core
+
+    testCompile project(':analytics-library:shared')
+    testCompile project(':analytics-library:protos')
+    testCompile project(':analytics-library:tracker')
+    testCompile project(':analytics-library:testing')
+    testCompile project(':base:apkparser:binary-resources')
+    testCompile project(':base:apkparser:apkanalyzer')
+    testCompile libs.truth
+    testCompile files(Jvm.current().toolsJar)
+    testCompile testFixtures(project(":base:repository"))
+}
+
+sourceSets {
+    main.resources.srcDir 'src/main/java'
+    test.resources.srcDir 'src/test/java'
+}
+
+project.ext.pomName = 'Android Tools Lint Test API'
+project.ext.pomDesc = 'API to build lint check tests'
