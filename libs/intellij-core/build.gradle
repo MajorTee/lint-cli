@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:6.1.1'
+    }
+}
+apply plugin: 'com.android.tools.java'
+apply plugin: 'com.android.tools.publish'
+
+group = 'com.android.tools.external.com-intellij'
+archivesBaseName = 'intellij-core'
+version = rootProject.ext.baseVersion
+
+dependencies {
+    compile 'org.jetbrains.trove4j:trove4j:20160824'
+}
+
+jar {
+    from zipTree("../../../../../prebuilts/tools/common/lint-psi/intellij-core/intellij-core.jar")
+}
+
+project.ext.pomName = 'IntelliJ IDEA Core'
+project.ext.pomDesc = 'IntelliJ IDEA Core'
