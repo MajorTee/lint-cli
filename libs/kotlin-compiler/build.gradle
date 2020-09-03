@@ -1,0 +1,30 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:6.1.1'
+    }
+}
+apply plugin: 'com.android.tools.java'
+apply plugin: 'com.android.tools.publish'
+
+group = 'com.android.tools.external.com-intellij'
+archivesBaseName = 'kotlin-compiler'
+version = rootProject.ext.baseVersion
+
+def prebuiltJars = [
+    "../../../../../prebuilts/tools/common/lint-psi/kotlin-compiler/kotlin-compiler.jar"
+]
+
+prebuiltJars.forEach {
+    jar.from(zipTree(it))
+    dependencies.compile(files(it)) // For Symbol resolution in Intellij IDEA
+}
+
+project.ext.pomName = 'Kotlin Compiler'
+project.ext.pomDesc = 'Kotlin Compiler'
+
+tasks.getByName("sourcesJar") {
+    from zipTree("../../../../../prebuilts/tools/common/lint-psi/kotlin-compiler/kotlin-compiler-sources.jar")
+}
